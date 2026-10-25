@@ -1,0 +1,18 @@
+name: LocalDocuments checks
+on: [push, pull_request]
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+      - name: Test standalone extraction
+        run: dotnet test tests/Navlonix.LocalDocuments.Tests/Navlonix.LocalDocuments.Tests.csproj --configuration Release
+      - name: Publish worker
+        run: dotnet publish src/Navlonix.LocalDocuments.Worker/Navlonix.LocalDocuments.Worker.csproj --configuration Release --output artifacts/worker
+
